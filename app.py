@@ -43,8 +43,7 @@ def lastSensor():
 
 @app.route("/nextStop") # Get <beacon> as input variable for the function sensor
 def nextStop():
-    events = dbFunctions.getLast()
-    dates(events)
+    events = dbFunctions.getLast()    
     station = 4
     nextstation = 0
     for beacon in beaconsList:
@@ -65,6 +64,10 @@ def nextStop():
         if int(beacon["Order"]) == nextstation:
             print("entro")
             events[0]["name"] = beacon["Station"]
+    vel = getSpeed()
+    timen = 1/vel
+    events[0]["date"] = events[0]["date"] + timen
+    dates(events)
     return render_template('index.html', events=events)
 
 @app.route("/fecha/<fecha>") # Get <beacon> as input variable for the function sensor
@@ -72,7 +75,7 @@ def fechas(fecha):
     dateb = changeStringDate(fecha)
     events = dbFunctions.getAllEvents()
     fechas = []
-    dates(events)
+    dates2(events)
     for event in events:
         if event['date'] == dateb:
             fechas.append(event)
@@ -88,7 +91,18 @@ def speed():
 
     return render_template('speed.html', vel=vel)
 
+def getSpeed():
+    events = dbFunctions.getLastP()
+    seconds = events[0]["date"] - events[1]["date"]
+    vel = 1/seconds
+    return vel
+
 def dates(events):
+    for event in events:
+        time1 = event['date']
+        event['date'] = time.strftime("%Y/%m/%d %H:%M", time.localtime(time1))
+
+def dates2(events):
     for event in events:
         time1 = event['date']
         event['date'] = time.strftime("%Y/%m/%d", time.localtime(time1))

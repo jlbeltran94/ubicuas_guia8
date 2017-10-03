@@ -8,7 +8,6 @@ import dbFunctions
 dbFunctions.createTable()
 input_file = csv.DictReader(open("beaconStations.csv"))
 beaconsList = []
-beaconsRead = []
 addressM = ""
 
 for row in input_file:
@@ -33,6 +32,7 @@ def getMaxRssi():
     return beacon
     
 while True:
+    beaconsRead = []
     devices = service.scan(DISCOVER_TIME)
     # Scan the devices inside the beacon service
     for address, data in list (devices.items()): # Run for loop for the scanned beacons
